@@ -6,12 +6,13 @@ mongoose.connect("mongodb://admin:bartar20%40CS@10.10.248.198:21771/", { useNewU
     const app = express();
     app.use(express.json());
 
-    app.listen(3000, () => {
+    app.listen(3001, () => {
         console.log("Server has started!")
     });
 
-    app.use('/', require('./routes/index/index.controller'));
-    app.use('/posts', require('./routes/posts/posts.controller'));
+    app.use('/', require('./routes/index.controller'));
+    app.use('/users', require('./routes/users'));
+    app.use('/posts', require('./routes/posts'));
 });
 
 
