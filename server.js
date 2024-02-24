@@ -1,5 +1,6 @@
 const express = require('express');
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+require('dotenv').config();
 
 
 mongoose.connect("mongodb://admin:bartar20%40CS@10.10.248.198:21771/", { useNewUrlParser: true }).then(() => {

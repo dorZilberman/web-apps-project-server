@@ -8,7 +8,7 @@ authMiddleware.verifyToken = (req, res, next) => {
 
     if (token == null) return res.sendStatus(401); // if there isn't any token
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET_TOKEN, (err, user) => {
         if (err) return res.sendStatus(403); // if the token has expired or is invalid
 
         req.user = user;
