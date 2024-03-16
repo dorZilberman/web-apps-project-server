@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const commentsController = require('../controllers/conmment.controller');
+const commentsController = require('../controllers/comment.controller');
 const authMiddleware = require('../middlewares/auth.middleware')
 
 // GET request to retrieve all comments by post
