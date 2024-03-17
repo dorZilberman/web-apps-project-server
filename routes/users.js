@@ -1,10 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const usersController = require('../controllers/user.controller');
-const authMiddleware = require('../middlewares/auth.middleware')
+const authMiddleware = require('../middlewares/auth.middleware');
+const googleAuthMiddleware = require('../middlewares/google-auth.middleware');
 
 // POST request to register a new user
 router.post('/register', usersController.registerUser);
+
+// POST request to register a new google user
+router.post('/googleRegister', googleAuthMiddleware.verifyToken, usersController.registerUserWithGoogle);
 
 // POST request for user login
 router.post('/login', usersController.loginUser);

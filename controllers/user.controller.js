@@ -6,20 +6,49 @@ const jwtSecret = process.env.JWT_SECRET_TOKEN;
 
 exports.registerUser = async (req, res) => {
     try {
-        const { email, password, fullName } = req.body;
+        const { email, password, name } = req.body;
         const hashedPassword = await bcrypt.hash(password, 12);
 
         const newUser = new User({
             email,
             password: hashedPassword,
-            fullName
+            fullName: name
         });
 
         const savedUser = await newUser.save();
-
+        const token = jwt.sign(
+            { email: savedUser.email, userId: savedUser._id },
+            jwtSecret,
+            { expiresIn: '1h' }
+        );
         res.status(201).json({
             message: 'User created!',
-            userId: savedUser._id
+            token: token
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error registering new user', error: error });
+    }
+};
+
+exports.registerUserWithGoogle = async (req, res) => {
+    try {
+        const { email, name } = req.body;
+
+        const newUser = new User({
+            email,
+            password: 'google-auth',
+            fullName: name
+        });
+
+        const savedUser = await newUser.save();
+        const token = jwt.sign(
+            { email: savedUser.email, userId: savedUser._id },
+            jwtSecret,
+            { expiresIn: '1h' }
+        );
+        res.status(201).json({
+            message: 'User created!',
+            token: token
         });
     } catch (error) {
         res.status(500).json({ message: 'Error registering new user', error: error });
