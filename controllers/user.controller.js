@@ -7,6 +7,7 @@ const jwtSecret = process.env.JWT_SECRET_TOKEN;
 exports.registerUser = async (req, res) => {
     try {
         const { email, password, name } = req.body;
+        if (!email || !password || !name) throw 'missing parameters';
         const hashedPassword = await bcrypt.hash(password, 12);
 
         const newUser = new User({
@@ -58,6 +59,7 @@ exports.registerUserWithGoogle = async (req, res) => {
 exports.loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
+        if (!email || !password) throw 'missing parameters';
         const user = await User.findOne({ email });
 
         if (!user) {
@@ -77,41 +79,22 @@ exports.loginUser = async (req, res) => {
         );
 
         res.status(200).json({
-            token: token,
-            expiresIn: 3600,
-            userId: user._id
+            message: 'User Logged In successfully!',
+            token: token
         });
     } catch (error) {
         res.status(500).json({ message: 'Error logging in', error: error });
     }
 };
 
-exports.getUserProfile = async (req, res) => {
-    try {
-        const user = await User.findById(req.params.userId);
-
-        if (!user) {
-            return res.status(404).json({ message: 'User not found.' });
-        }
-
-        res.status(200).json({
-            email: user.email,
-            fullName: user.fullName,
-            created: user.created
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching user profile', error: error });
-    }
-};
-
 exports.updateUserProfile = async (req, res) => {
     try {
-        const { fullName } = req.body;
-        const user = await User.findById(req.params.userId);
+        const user = await User.findById(req.user.userId);
 
         if (!user) {
             return res.status(404).json({ message: 'User not found.' });
         }
+        const { fullName } = req.body;
 
         user.fullName = fullName;
         const updatedUser = await user.save();
@@ -127,13 +110,13 @@ exports.updateUserProfile = async (req, res) => {
 
 exports.deleteUserProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.params.userId);
+        const user = await User.findById(req.user.userId);
 
         if (!user) {
             return res.status(404).json({ message: 'User not found.' });
         }
 
-        await User.findByIdAndRemove(req.params.userId);
+        await User.findByIdAndRemove(user._id);
 
         res.status(200).json({ message: 'User profile deleted' });
     } catch (error) {

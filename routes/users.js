@@ -4,22 +4,139 @@ const usersController = require('../controllers/user.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
 const googleAuthMiddleware = require('../middlewares/google-auth.middleware');
 
-// POST request to register a new user
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: Users management
+ */
+
+/**
+ * @swagger
+ * /users/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *               - name
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *               name:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *       400:
+ *         description: Bad request
+ */
 router.post('/register', usersController.registerUser);
 
-// POST request to register a new google user
+/**
+ * @swagger
+ * /users/googleRegister:
+ *   post:
+ *     summary: Register a new user via Google authentication
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 description: Google user token
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *       400:
+ *         description: Bad request
+ */
 router.post('/googleRegister', googleAuthMiddleware.verifyToken, usersController.registerUserWithGoogle);
 
-// POST request for user login
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: Login an existing user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *     responses:
+ *       200:
+ *         description: User logged in successfully
+ *       401:
+ *         description: Authentication failed
+ */
 router.post('/login', usersController.loginUser);
 
-// GET request for the current user's profile
-router.get('/profile', authMiddleware.verifyToken, usersController.getUserProfile);
-
-// PUT request to update a user's profile
+/**
+ * @swagger
+ * /users/profile:
+ *   put:
+ *     summary: Update user's profile
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fullName:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User profile updated successfully
+ *       400:
+ *         description: Bad request
+ */
 router.put('/profile', authMiddleware.verifyToken, usersController.updateUserProfile);
 
-// DELETE request to delete a user's profile
+/**
+ * @swagger
+ * /users/profile:
+ *   delete:
+ *     summary: Delete user's profile
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User profile deleted successfully
+ *       404:
+ *         description: User not found
+ */
 router.delete('/profile', authMiddleware.verifyToken, usersController.deleteUserProfile);
 
 module.exports = router;
