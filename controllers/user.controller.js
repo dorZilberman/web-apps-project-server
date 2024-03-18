@@ -24,6 +24,7 @@ exports.registerUser = async (req, res) => {
         );
         res.status(201).json({
             message: 'User created!',
+            userId: savedUser._id,
             token: token
         });
     } catch (error) {
@@ -49,6 +50,7 @@ exports.registerUserWithGoogle = async (req, res) => {
         );
         res.status(201).json({
             message: 'User created!',
+            userId: savedUser._id,
             token: token
         });
     } catch (error) {
@@ -80,6 +82,7 @@ exports.loginUser = async (req, res) => {
 
         res.status(200).json({
             message: 'User Logged In successfully!',
+            userId: user._id,
             token: token
         });
     } catch (error) {
@@ -103,6 +106,7 @@ exports.loginUserWithGoogle = async (req, res) => {
         );
         res.status(201).json({
             message: 'User Logged In successfully with Google!',
+            userId: user._id,
             token: token
         });
     } catch (error) {
