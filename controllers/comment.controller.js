@@ -12,8 +12,8 @@ exports.getAllCommentsByPost = async (req, res) => {
 exports.createComment = async (req, res) => {
     const comment = new Comment({
         userId: req.user.id,
-        postId: req.postId,
-        content: req.content,
+        postId: req.body.postId,
+        content: req.body.content,
         created: new Date(),
     });
 
