@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const usersController = require('../controllers/user.controller');
+const refreshTokenController = require('../controllers/refresh-token.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
 const googleAuthMiddleware = require('../middlewares/google-auth.middleware');
 
@@ -162,5 +163,7 @@ router.put('/profile', authMiddleware.verifyToken, usersController.updateUserPro
  *         description: User not found
  */
 router.delete('/profile', authMiddleware.verifyToken, usersController.deleteUserProfile);
+
+router.get('/refreshToken', refreshTokenController.refreshToken);
 
 module.exports = router;

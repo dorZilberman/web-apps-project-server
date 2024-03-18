@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const jwtSecret = process.env.JWT_SECRET_TOKEN;
+const jwtRefreshTokenSecret = process.env.JWT_SECRET_REFRESH_TOKEN;
 
 exports.registerUser = async (req, res) => {
     try {
@@ -17,15 +18,20 @@ exports.registerUser = async (req, res) => {
         });
 
         const savedUser = await newUser.save();
-        const token = jwt.sign(
+        const accessToken = jwt.sign(
             { email: savedUser.email, userId: savedUser._id },
             jwtSecret,
             { expiresIn: '1h' }
         );
+        const refreshToken = jwt.sign(
+            { userId: savedUser._id },
+            jwtRefreshTokenSecret,
+        );
         res.status(201).json({
             message: 'User created!',
             userId: savedUser._id,
-            token: token
+            accessToken,
+            refreshToken
         });
     } catch (error) {
         res.status(500).json({ message: 'Error registering new user', error: error });
@@ -43,15 +49,20 @@ exports.registerUserWithGoogle = async (req, res) => {
         });
 
         const savedUser = await newUser.save();
-        const token = jwt.sign(
+        const accessToken = jwt.sign(
             { email: savedUser.email, userId: savedUser._id },
             jwtSecret,
             { expiresIn: '1h' }
         );
+        const refreshToken = jwt.sign(
+            { userId: savedUser._id },
+            jwtRefreshTokenSecret,
+        );
         res.status(201).json({
             message: 'User created!',
             userId: savedUser._id,
-            token: token
+            accessToken,
+            refreshToken
         });
     } catch (error) {
         res.status(500).json({ message: 'Error registering new user', error: error });
@@ -74,16 +85,20 @@ exports.loginUser = async (req, res) => {
             return res.status(401).json({ message: 'Authentication failed: incorrect password.' });
         }
 
-        const token = jwt.sign(
+        const accessToken = jwt.sign(
             { email: user.email, userId: user._id },
             jwtSecret,
             { expiresIn: '1h' }
         );
-
+        const refreshToken = jwt.sign(
+            { userId: savedUser._id },
+            jwtRefreshTokenSecret,
+        );
         res.status(200).json({
             message: 'User Logged In successfully!',
             userId: user._id,
-            token: token
+            accessToken,
+            refreshToken
         });
     } catch (error) {
         res.status(500).json({ message: 'Error logging in', error: error });
@@ -99,15 +114,20 @@ exports.loginUserWithGoogle = async (req, res) => {
         if (!user) {
             return res.status(401).json({ message: 'Authentication failed: user not found.' });
         }
-        const token = jwt.sign(
+        const accessToken = jwt.sign(
             { email: email, userId: user._id },
             jwtSecret,
             { expiresIn: '1h' }
         );
+        const refreshToken = jwt.sign(
+            { userId: savedUser._id },
+            jwtRefreshTokenSecret,
+        );
         res.status(201).json({
             message: 'User Logged In successfully with Google!',
             userId: user._id,
-            token: token
+            accessToken,
+            refreshToken
         });
     } catch (error) {
         res.status(500).json({ message: 'Error registering new user with google', error: error });
