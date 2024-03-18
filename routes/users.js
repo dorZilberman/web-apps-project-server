@@ -164,6 +164,20 @@ router.put('/profile', authMiddleware.verifyToken, usersController.updateUserPro
  */
 router.delete('/profile', authMiddleware.verifyToken, usersController.deleteUserProfile);
 
+/**
+ * @swagger
+ * /users/refreshToken:
+ *   get:
+ *     summary: get new tokens for user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User got new tokens
+ *       403:
+ *         description: User not found
+ */
 router.get('/refreshToken', refreshTokenController.refreshToken);
 
 module.exports = router;
