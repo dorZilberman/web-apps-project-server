@@ -34,7 +34,7 @@ exports.registerUser = async (req, res) => {
             refreshToken
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error registering new user', error: error });
+        res.status(500).json({ message: 'Error registering new user', error: error.message || error });
     }
 };
 
@@ -65,7 +65,7 @@ exports.registerUserWithGoogle = async (req, res) => {
             refreshToken
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error registering new user', error: error });
+        res.status(500).json({ message: 'Error registering new user', error: error.message || error });
     }
 };
 
@@ -91,7 +91,7 @@ exports.loginUser = async (req, res) => {
             { expiresIn: '1h' }
         );
         const refreshToken = jwt.sign(
-            { userId: savedUser._id },
+            { userId: user._id },
             jwtRefreshTokenSecret,
         );
         res.status(200).json({
@@ -101,7 +101,7 @@ exports.loginUser = async (req, res) => {
             refreshToken
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error logging in', error: error });
+        res.status(500).json({ message: 'Error logging in', error: error.message || error });
     }
 };
 
@@ -130,7 +130,7 @@ exports.loginUserWithGoogle = async (req, res) => {
             refreshToken
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error registering new user with google', error: error });
+        res.status(500).json({ message: 'Error registering new user with google', error: error.message || error });
     }
 };
 
@@ -151,7 +151,7 @@ exports.updateUserProfile = async (req, res) => {
             fullName: updatedUser.fullName
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error updating user profile', error: error });
+        res.status(500).json({ message: 'Error updating user profile', error: error.message || error });
     }
 };
 
@@ -167,6 +167,6 @@ exports.deleteUserProfile = async (req, res) => {
 
         res.status(200).json({ message: 'User profile deleted' });
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting user profile', error: error });
+        res.status(500).json({ message: 'Error deleting user profile', error: error.message || error });
     }
 };

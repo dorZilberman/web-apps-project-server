@@ -5,7 +5,7 @@ exports.getAllCommentsByPost = async (req, res) => {
         const comments = await Comment.find({ postId: req.params.postId }).sort({ created: -1 });
         res.status(200).json(comments);
     } catch (error) {
-        res.status(500).json({ message: "Error fetching comments by post", error });
+        res.status(500).json({ message: "Error fetching comments by post", error: error.message || error });
     }
 };
 
@@ -21,7 +21,7 @@ exports.createComment = async (req, res) => {
         const newComment = await comment.save();
         res.status(201).json(newComment);
     } catch (error) {
-        res.status(400).json({ message: "Error creating comment", error });
+        res.status(400).json({ message: "Error creating comment", error: error.message || error });
     }
 };
 
@@ -41,6 +41,6 @@ exports.deleteComment = async (req, res) => {
         await comment.remove();
         res.status(200).json({ message: "Comment deleted successfully" });
     } catch (error) {
-        res.status(500).json({ message: "Error deleting Comment", error });
+        res.status(500).json({ message: "Error deleting Comment", error: error.message || error });
     }
 };
