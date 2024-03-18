@@ -11,7 +11,7 @@ exports.getAllCommentsByPost = async (req, res) => {
 
 exports.createComment = async (req, res) => {
     const comment = new Comment({
-        userId: req.user.id,
+        userId: req.user.userId,
         postId: req.body.postId,
         content: req.body.content,
         created: new Date(),
@@ -34,7 +34,7 @@ exports.deleteComment = async (req, res) => {
             return res.status(404).json({ message: "Comment not found" });
         }
 
-        if (comment.userId.toString() !== req.user.id) {
+        if (comment.userId.toString() !== req.user.userId) {
             return res.status(401).json({ message: "Not authorized to delete this Comment" });
         }
 

@@ -20,7 +20,7 @@ exports.getPostsByUser = async (req, res) => {
 
 exports.createPost = async (req, res) => {
     const post = new Post({
-        userId: req.user.id,
+        userId: req.user.userId,
         title: req.body.title,
         description: req.body.description,
         image: req.file.path,
@@ -46,7 +46,7 @@ exports.updatePost = async (req, res) => {
 
     try {
         const post = await Post.findById(id);
-        if (post.userId.toString() !== req.user.id) {
+        if (post.userId.toString() !== req.user.userId) {
             return res.status(401).json({ message: "Not authorized to update this post" });
         }
 
@@ -66,7 +66,7 @@ exports.deletePost = async (req, res) => {
             return res.status(404).json({ message: "Post not found" });
         }
 
-        if (post.userId.toString() !== req.user.id) {
+        if (post.userId.toString() !== req.user.userId) {
             return res.status(401).json({ message: "Not authorized to delete this post" });
         }
 
