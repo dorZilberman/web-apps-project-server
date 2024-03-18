@@ -180,4 +180,20 @@ router.delete('/profile', authMiddleware.verifyToken, usersController.deleteUser
  */
 router.get('/refreshToken', refreshTokenController.refreshToken);
 
+/**
+ * @swagger
+ * /users/logout:
+ *   post:
+ *     summary: log out user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User logged out seccessfully
+ *       403:
+ *         description: User not found
+ */
+router.post('/logout', refreshTokenController.logoutUser);
+
 module.exports = router;
