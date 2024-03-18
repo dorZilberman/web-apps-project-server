@@ -100,6 +100,30 @@ router.post('/login', usersController.loginUser);
 
 /**
  * @swagger
+ * /users/googleLogin:
+ *   post:
+ *     summary: Login a user via Google authentication
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 description: Google user token
+ *     responses:
+ *       201:
+ *         description: User Logged In successfully with Google!
+ *       400:
+ *         description: Bad request
+ */
+router.post('/googleLogin', googleAuthMiddleware.verifyToken, usersController.loginUserWithGoogle);
+
+/**
+ * @swagger
  * /users/profile:
  *   put:
  *     summary: Update user's profile
