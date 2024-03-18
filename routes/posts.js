@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const postsController = require('../controllers/post.controller');
 const authMiddleware = require('../middlewares/auth.middleware')
+const photoUploadMiddleware = require('../middlewares/photo-upload.middleware');
 
 /**
  * @swagger
@@ -89,7 +90,7 @@ router.get('/user/:userId', authMiddleware.verifyToken, postsController.getPosts
  *       400:
  *         description: Bad request
  */
-router.post('/', authMiddleware.verifyToken, postsController.createPost);
+router.post('/', authMiddleware.verifyToken, photoUploadMiddleware.single('image'), postsController.createPost);
 
 /**
  * @swagger
@@ -126,7 +127,7 @@ router.post('/', authMiddleware.verifyToken, postsController.createPost);
  *       400:
  *         description: Bad request
  */
-router.put('/:id', authMiddleware.verifyToken, postsController.updatePost);
+router.put('/:id', authMiddleware.verifyToken, photoUploadMiddleware.single('image'), postsController.updatePost);
 
 /**
  * @swagger
