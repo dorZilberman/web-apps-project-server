@@ -87,6 +87,29 @@ exports.loginUser = async (req, res) => {
     }
 };
 
+exports.loginUserWithGoogle = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(401).json({ message: 'Authentication failed: user not found.' });
+        }
+        const token = jwt.sign(
+            { email: email, userId: user._id },
+            jwtSecret,
+            { expiresIn: '1h' }
+        );
+        res.status(201).json({
+            message: 'User Logged In successfully with Google!',
+            token: token
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error registering new user with google', error: error });
+    }
+};
+
 exports.updateUserProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user.userId);
