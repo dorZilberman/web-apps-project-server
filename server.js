@@ -38,9 +38,6 @@ mongoose.connect("mongodb://admin:bartar20%40CS@10.10.248.198:21771/", { useNewU
     app.use('/comments', require('./routes/comments'));
     app.use('/public', express.static('public'));
 
-    const crypto = require('crypto');
-    const secret = crypto.randomBytes(64).toString('hex');
-    console.log(secret);
     app.listen(3001, () => {
         console.log("Server has started!")
     });
