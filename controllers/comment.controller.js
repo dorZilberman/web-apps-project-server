@@ -1,8 +1,14 @@
 const Comment = require('../models/comment/comment');
+const User = require('../models/user/user');
 
 exports.getAllCommentsByPost = async (req, res) => {
     try {
-        const comments = await Comment.find({ postId: req.params.postId }).sort({ created: -1 });
+        const comments = await Comment.find({ postId: req.params.postId }).sort({ created: -1 }).lean();
+        for (const comment of comments) {
+            const user = await User.findById(comment.userId);
+            comment.userFullName = user.fullName;
+            comment.userImage = user.image;
+        }
         res.status(200).json(comments);
     } catch (error) {
         res.status(500).json({ message: "Error fetching comments by post", error: error.message || error });
