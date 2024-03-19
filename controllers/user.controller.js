@@ -121,7 +121,7 @@ exports.loginUserWithGoogle = async (req, res) => {
             { expiresIn: '1h' }
         );
         const refreshToken = jwt.sign(
-            { userId: savedUser._id },
+            { userId: user._id },
             jwtRefreshTokenSecret,
         );
         res.status(201).json({
