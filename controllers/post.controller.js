@@ -19,15 +19,15 @@ exports.getPostsByUser = async (req, res) => {
 };
 
 exports.createPost = async (req, res) => {
-    const post = new Post({
-        userId: req.user.userId,
-        title: req.body.title,
-        description: req.body.description,
-        image: req.file.path,
-        created: new Date(),
-    });
-
     try {
+        const body = JSON.parse(req.body.jsonData);
+        const post = new Post({
+            userId: req.user.userId,
+            title: body.title,
+            description: body.description,
+            image: req.file.path,
+            created: new Date(),
+        });
         const newPost = await post.save();
         res.status(201).json(newPost);
     } catch (error) {

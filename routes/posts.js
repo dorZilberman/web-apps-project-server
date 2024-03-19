@@ -90,7 +90,7 @@ router.get('/user/:userId', authMiddleware.verifyToken, postsController.getPosts
  *       400:
  *         description: Bad request
  */
-router.post('/', authMiddleware.verifyToken, photoUploadMiddleware.single('image'), postsController.createPost);
+router.post('/', authMiddleware.verifyToken, photoUploadMiddleware.single('postImage'), postsController.createPost);
 
 /**
  * @swagger
@@ -127,7 +127,7 @@ router.post('/', authMiddleware.verifyToken, photoUploadMiddleware.single('image
  *       400:
  *         description: Bad request
  */
-router.put('/:id', authMiddleware.verifyToken, photoUploadMiddleware.single('image'), postsController.updatePost);
+router.put('/:id', authMiddleware.verifyToken, photoUploadMiddleware.single('postImage'), postsController.updatePost);
 
 /**
  * @swagger
