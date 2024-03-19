@@ -4,6 +4,7 @@ const usersController = require('../controllers/user.controller');
 const refreshTokenController = require('../controllers/refresh-token.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
 const googleAuthMiddleware = require('../middlewares/google-auth.middleware');
+const photoUploadMiddleware = require('../middlewares/photo-upload.middleware');
 
 /**
  * @swagger
@@ -43,7 +44,7 @@ const googleAuthMiddleware = require('../middlewares/google-auth.middleware');
  *       400:
  *         description: Bad request
  */
-router.post('/register', usersController.registerUser);
+router.post('/register', photoUploadMiddleware.single('userImage'), usersController.registerUser);
 
 /**
  * @swagger
@@ -146,7 +147,7 @@ router.post('/googleLogin', googleAuthMiddleware.verifyToken, usersController.lo
  *       400:
  *         description: Bad request
  */
-router.put('/profile', authMiddleware.verifyToken, usersController.updateUserProfile);
+router.put('/profile', authMiddleware.verifyToken, photoUploadMiddleware.single('userImage'), usersController.updateUserProfile);
 
 /**
  * @swagger

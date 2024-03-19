@@ -7,14 +7,15 @@ const jwtRefreshTokenSecret = process.env.JWT_SECRET_REFRESH_TOKEN;
 
 exports.registerUser = async (req, res) => {
     try {
-        const { email, password, name } = req.body;
+        const { email, password, name } = JSON.parse(req.body.jsonData);
         if (!email || !password || !name) throw 'missing parameters';
         const hashedPassword = await bcrypt.hash(password, 12);
 
         const newUser = new User({
             email,
             password: hashedPassword,
-            fullName: name
+            fullName: name,
+            image: req.file.path,
         });
 
         const savedUser = await newUser.save();
@@ -136,19 +137,22 @@ exports.loginUserWithGoogle = async (req, res) => {
 
 exports.updateUserProfile = async (req, res) => {
     try {
+        const { fullName } = JSON.parse(req.body.jsonData);
         const user = await User.findById(req.user.userId);
 
         if (!user) {
             return res.status(404).json({ message: 'User not found.' });
         }
-        const { fullName } = req.body;
-
-        user.fullName = fullName;
-        const updatedUser = await user.save();
+        if (fullName && user.fullName !== fullName) {
+            user.fullName = fullName;
+        }
+        if (req.file?.path && user.image !== req.file.path) {
+            user.image = req.file.path;
+        }
+        await user.save();
 
         res.status(200).json({
-            message: 'User profile updated',
-            fullName: updatedUser.fullName
+            message: 'User profile updated'
         });
     } catch (error) {
         res.status(500).json({ message: 'Error updating user profile', error: error.message || error });
