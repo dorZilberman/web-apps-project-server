@@ -1,8 +1,13 @@
 const Post = require('../models/post/post');
+const Comment = require('../models/comment/comment');
 
 exports.getAllPosts = async (req, res) => {
     try {
-        const posts = await Post.find().sort({ created: -1 });
+        const posts = await Post.find().sort({ created: -1 }).lean();
+        for (const post of posts) {
+            const comments = await Comment.find({ postId: post._id }).lean();
+            post.numOfComments = comments.length;
+        }
         res.status(200).json(posts);
     } catch (error) {
         res.status(500).json({ message: "Error fetching posts", error: error.message || error });
@@ -12,6 +17,10 @@ exports.getAllPosts = async (req, res) => {
 exports.getPostsByUser = async (req, res) => {
     try {
         const posts = await Post.find({ userId: req.params.userId }).sort({ created: -1 });
+        for (const post of posts) {
+            const comments = await Comment.find({ postId: post._id }).lean();
+            post.numOfComments = comments.length;
+        }
         res.status(200).json(posts);
     } catch (error) {
         res.status(500).json({ message: "Error fetching user's posts", error: error.message || error });
