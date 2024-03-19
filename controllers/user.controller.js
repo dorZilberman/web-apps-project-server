@@ -41,12 +41,12 @@ exports.registerUser = async (req, res) => {
 
 exports.registerUserWithGoogle = async (req, res) => {
     try {
-        const { email, name } = req.body;
-
+        const { email, name, picture } = req.body;
         const newUser = new User({
             email,
             password: 'google-auth',
-            fullName: name
+            fullName: name,
+            image: picture
         });
 
         const savedUser = await newUser.save();
