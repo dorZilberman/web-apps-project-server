@@ -16,6 +16,7 @@ exports.registerUser = async (req, res) => {
             password: hashedPassword,
             fullName: name,
             image: req.file.path,
+            tokens: [],
         });
 
         const savedUser = await newUser.save();
@@ -28,6 +29,8 @@ exports.registerUser = async (req, res) => {
             { userId: savedUser._id },
             jwtRefreshTokenSecret,
         );
+        newUser.tokens.push(refreshToken);
+        await newUser.save();
         res.status(201).json({
             message: 'User created!',
             userId: savedUser._id,
@@ -46,7 +49,8 @@ exports.registerUserWithGoogle = async (req, res) => {
             email,
             password: 'google-auth',
             fullName: name,
-            image: picture
+            image: picture,
+            tokens: [],
         });
 
         const savedUser = await newUser.save();
@@ -59,6 +63,8 @@ exports.registerUserWithGoogle = async (req, res) => {
             { userId: savedUser._id },
             jwtRefreshTokenSecret,
         );
+        newUser.tokens.push(refreshToken);
+        await newUser.save();
         res.status(201).json({
             message: 'User created!',
             userId: savedUser._id,
@@ -95,6 +101,8 @@ exports.loginUser = async (req, res) => {
             { userId: user._id },
             jwtRefreshTokenSecret,
         );
+        user.tokens.push(refreshToken);
+        await user.save();
         res.status(200).json({
             message: 'User Logged In successfully!',
             userId: user._id,
@@ -124,6 +132,8 @@ exports.loginUserWithGoogle = async (req, res) => {
             { userId: user._id },
             jwtRefreshTokenSecret,
         );
+        user.tokens.push(refreshToken);
+        await user.save();
         res.status(201).json({
             message: 'User Logged In successfully with Google!',
             userId: user._id,
