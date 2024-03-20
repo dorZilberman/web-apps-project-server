@@ -196,7 +196,7 @@ exports.getUserProfile = async (req, res) => {
         res.status(200).json({
             email: user.email,
             fullName: user.fullName,
-            image: user.email
+            image: user.image
         });
     } catch (error) {
         res.status(500).json({ message: 'Error deleting user profile', error: error.message || error });
