@@ -197,4 +197,6 @@ router.get('/refreshToken', refreshTokenController.refreshToken);
  */
 router.post('/logout', refreshTokenController.logoutUser);
 
+router.get('/', authMiddleware.verifyToken, usersController.getUserProfile);
+
 module.exports = router;
