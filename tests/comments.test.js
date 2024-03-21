@@ -11,22 +11,21 @@ var commentId;
 var accessToken;
 beforeAll(async () => {
     app = await initApp();
-    const getUserRes = await request(app).post(`/users`)
-    .send({
+    const createUserRes = await request(app).post(`/users/register`).send({
         name: 'testCommentUserName',
         email: 'testCommentUserEmail',
         password: 'testCommentUserPassword'
     });
-    userId = getUserRes._id;
+    userId = createUserRes.body.userId;
+    accessToken = createUserRes.body.accessToken;
     const post = new Post({
         userId: userId,
-        title: 'testPostTitle',
-        description: 'testPostDescription',
+        title: 'testCommentPostTitle',
+        description: 'testCommentPostDescription',
         image: ''
     });
     const newPost = await post.save();
     postId = newPost._id;
-    accessToken = newPost.accessToken;
 });
 
 afterAll(async () => {
@@ -37,11 +36,10 @@ afterAll(async () => {
     mongoose.connection.close();
 });
 
-describe('GET /comments', () => {
+describe(`GET /comments`, () => {
     test('get comments test', async () => {
-        const response = await request(app).get(`/comments/${userId}`)
+        const response = await request(app).get(`/comments/${postId}`)
         .set('Authorization', `Bearer ${accessToken}`);
-        // .set('Authorization', `Bearer ${process.env.INTERNAL_SECRET_TOKEN}`);
         expect(response.statusCode).toEqual(200);
     });
 });
@@ -54,7 +52,6 @@ describe('post /comments', () => {
             content: 'testCommentContent',
         })
         .set('Authorization', `Bearer ${accessToken}`);
-        // .set('Authorization', `Bearer ${process.env.INTERNAL_SECRET_TOKEN}`);
         expect(response.statusCode).toEqual(201);
         expect(response.body).toHaveProperty('_id');
         expect(response.body.content).toEqual('testCommentContent');
@@ -62,11 +59,10 @@ describe('post /comments', () => {
     });
 });
 
-describe(`delete /comments/${commentId}`, () => {
+describe(`delete /comments`, () => {
     test('delete comment test', async () => {
         const response = await request(app).delete(`/comments/${commentId}`)
         .set('Authorization', `Bearer ${accessToken}`);
-        // .set('Authorization', `Bearer ${process.env.INTERNAL_SECRET_TOKEN}`);
         expect(response.statusCode).toEqual(200);
         expect(response.body.message).toEqual('Comment deleted successfully');
     });

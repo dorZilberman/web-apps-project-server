@@ -19,6 +19,6 @@
   "scripts": {
     "start": "node app.js",
     "devstart": "nodemon server.js",
-    "test": "jest --detectOpenHandles --forceExit"
+    "test": "jest --detectOpenHandles --coverage --forceExit"
   }
 }
