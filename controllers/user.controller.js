@@ -7,7 +7,13 @@ const jwtRefreshTokenSecret = process.env.JWT_SECRET_REFRESH_TOKEN;
 
 exports.registerUser = async (req, res) => {
     try {
-        const { email, password, name } = JSON.parse(req.body.jsonData);
+        let body;
+        if (typeof req.body.jsonData === 'string') {
+            body = JSON.parse(req.body.jsonData);
+        } else {
+            body = req.body;
+        }
+        const { email, password, name } = body;
         if (!email || !password || !name) throw 'missing parameters';
         const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -15,7 +21,7 @@ exports.registerUser = async (req, res) => {
             email,
             password: hashedPassword,
             fullName: name,
-            image: req.file.path,
+            image: req?.file?.path || body.image || "",
             tokens: [],
         });
 
@@ -147,7 +153,12 @@ exports.loginUserWithGoogle = async (req, res) => {
 
 exports.updateUserProfile = async (req, res) => {
     try {
-        const { fullName } = JSON.parse(req.body.jsonData);
+        let fullName;
+        if (typeof req.body.jsonData === 'string') {
+            fullName = JSON.parse(req.body.jsonData).fullName;
+        } else {
+            fullName = req.body.fullName
+        }
         const user = await User.findById(req.user.userId);
 
         if (!user) {

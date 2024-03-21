@@ -29,12 +29,17 @@ exports.getPostsByUser = async (req, res) => {
 
 exports.createPost = async (req, res) => {
     try {
-        const body = JSON.parse(req.body.jsonData);
+        let body;
+        if (typeof req.body.jsonData === 'string') {
+            body = JSON.parse(req.body.jsonData);
+        } else {
+            body = req.body;
+        }
         const post = new Post({
             userId: req.user.userId,
             title: body.title,
             description: body.description,
-            image: req.file.path,
+            image: req?.file?.path || body.image,
             created: new Date(),
         });
         const newPost = await post.save();

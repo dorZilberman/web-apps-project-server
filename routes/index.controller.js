@@ -4,8 +4,4 @@ router.get('/', function(req, res) {
     res.send('OK!');
 });
 
-router.get('/about', function(req, res) {
-    res.send('About Page');
-});
-
 module.exports = router;
