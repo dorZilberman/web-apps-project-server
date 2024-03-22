@@ -4,7 +4,7 @@ const http = require('http');
 const fs = require('fs');
 
 const httpPort = process.env.HTTP_PORT || 4001;
-const httpsPort = process.env.HTTPS_PORT || 4002;
+const httpsPort = process.env.HTTPS_PORT || 4001;
 
 initApp().then((app) => {
     if (process.env.NODE_ENV !== 'production') {
